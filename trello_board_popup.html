@@ -97,21 +97,33 @@
           '<strong>Board:</strong> ' + board.name + '<br>' +
           '<strong>ID:</strong> ' + board.id + '<br>' +
           '<strong>URL:</strong> <a href="' + board.url + '" target="_blank">Open Board</a>';
+      }).catch(function(error) {
+        document.getElementById('boardInfo').innerHTML = 
+          '<strong>Error:</strong> Could not load board info';
+        console.error('Board info error:', error);
       });
 
       // Get lists count
       t.lists('id', 'name').then(function(lists) {
         document.getElementById('listCount').textContent = lists.length;
+      }).catch(function(error) {
+        document.getElementById('listCount').textContent = 'N/A';
+        console.error('Lists error:', error);
       });
 
       // Get cards count
       t.cards('id').then(function(cards) {
         document.getElementById('cardCount').textContent = cards.length;
+      }).catch(function(error) {
+        document.getElementById('cardCount').textContent = 'N/A';
+        console.error('Cards error:', error);
       });
     }
 
-    // Load data on page load
-    loadBoardData();
+    // Wait for iframe to be ready, then load data
+    t.render(function() {
+      loadBoardData();
+    });
 
     // Refresh button
     document.getElementById('refreshBtn').addEventListener('click', function() {

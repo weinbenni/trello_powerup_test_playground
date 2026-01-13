@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Basic Trello Power-Up</title>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+  <script>
+    // Initialize the Trello Power-Up
+    TrelloPowerUp.initialize({
+      // Add a button to card buttons
+      'card-buttons': function(t, opts) {
+        return [{
+          icon: 'https://cdn.glitch.com/1b42d7fe-bda8-4af8-a6c8-eff0cea9e08a%2Frocket-ship.png?1494946700421',
+          text: 'Card Popup',
+          callback: function(t) {
+            // Sign the URL before opening popup
+            return t.popup({
+              title: 'Card Power-Up Popup',
+              url: t.signUrl('./card-popup.html'),
+              height: 200
+            });
+          }
+        }];
+      },
+      
+      // Add a button to board buttons
+      'board-buttons': function(t, opts) {
+        return [{
+          icon: {
+            dark: 'https://cdn.glitch.com/1b42d7fe-bda8-4af8-a6c8-eff0cea9e08a%2Frocket-ship.png?1494946700421',
+            light: 'https://cdn.glitch.com/1b42d7fe-bda8-4af8-a6c8-eff0cea9e08a%2Frocket-ship.png?1494946700421'
+          },
+          text: 'Board Popup',
+          callback: function(t) {
+            // Sign the URL before opening popup
+            return t.popup({
+              title: 'Board Power-Up Popup',
+              url: t.signUrl('./board-popup.html'),
+              height: 250
+            });
+          }
+        }];
+      }
+    });
+  </script>
+</body>
+</html>

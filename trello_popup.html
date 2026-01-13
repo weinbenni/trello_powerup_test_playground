@@ -62,13 +62,71 @@
 </head>
 <body>
   <h3>Card Power-Up</h3>
-  <p>This popup is opened from a card button.</p>
-  <p>You can interact with the current card here.</p>
-  <button id="closeBtn">Close Popup</button>
+  <div class="card-info" id="cardInfo">Loading card info...</div>
+  
+  <label for="noteInput"><strong>Add a note:</strong></label>
+  <input type="text" id="noteInput" placeholder="Enter a note for this card...">
+  
+  <div class="action-buttons">
+    <button id="saveBtn">Save Note</button>
+    <button id="addLabelBtn" class="secondary-btn">Add Label</button>
+    <button id="closeBtn" class="secondary-btn">Close</button>
+  </div>
 
   <script>
     var t = TrelloPowerUp.iframe();
 
+    // Wait for iframe to be ready before making requests
+    t.render(function() {
+      // Get card information
+      t.card('name', 'id', 'desc').then(function(card) {
+        document.getElementById('cardInfo').innerHTML = 
+          '<strong>Card Name:</strong> ' + card.name + '<br>' +
+          '<strong>Card ID:</strong> ' + card.id + '<br>' +
+          '<strong>Description:</strong> ' + (card.desc || 'No description');
+      }).catch(function(error) {
+        document.getElementById('cardInfo').innerHTML = 
+          '<strong>Card info:</strong> Available when opened from a card';
+      });
+    });
+
+    // Save note button
+    document.getElementById('saveBtn').addEventListener('click', function() {
+      var note = document.getElementById('noteInput').value;
+      if (note) {
+        // Store the note using Trello's data storage
+        t.set('card', 'shared', 'powerUpNote', note)
+          .then(function() {
+            alert('Note saved successfully!');
+            document.getElementById('noteInput').value = '';
+          })
+          .catch(function(error) {
+            alert('Error saving note: ' + error);
+          });
+      }
+    });
+
+    // Add label button
+    document.getElementById('addLabelBtn').addEventListener('click', function() {
+      t.popup({
+        title: 'Select Label Color',
+        items: [
+          { text: 'Green Label', callback: function(t) { return addLabel(t, 'green'); }},
+          { text: 'Yellow Label', callback: function(t) { return addLabel(t, 'yellow'); }},
+          { text: 'Orange Label', callback: function(t) { return addLabel(t, 'orange'); }},
+          { text: 'Red Label', callback: function(t) { return addLabel(t, 'red'); }},
+          { text: 'Purple Label', callback: function(t) { return addLabel(t, 'purple'); }},
+          { text: 'Blue Label', callback: function(t) { return addLabel(t, 'blue'); }}
+        ]
+      });
+    });
+
+    function addLabel(t, color) {
+      alert('Label color "' + color + '" selected! (Note: Actually adding labels requires Trello API)');
+      t.closePopup();
+    }
+
+    // Close button
     document.getElementById('closeBtn').addEventListener('click', function() {
       t.closePopup();
     });
