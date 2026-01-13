@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Board Popup</title>
+  <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <style>
+    body {
+      padding: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    }
+    h3 {
+      margin-top: 0;
+      color: #172b4d;
+    }
+    button {
+      background: #0079bf;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 8px;
+    }
+    button:hover {
+      background: #026aa7;
+    }
+    #boardInfo {
+      background: #f4f5f7;
+      padding: 12px;
+      border-radius: 3px;
+      margin: 10px 0;
+      font-size: 13px;
+    }
+    #boardInfo strong {
+      color: #172b4d;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .stat-box {
+      background: #fff;
+      border: 1px solid #dfe1e6;
+      padding: 12px;
+      border-radius: 3px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0079bf;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #5e6c84;
+      margin-top: 4px;
+    }
+    .secondary-btn {
+      background: #091e420a;
+      color: #172b4d;
+    }
+    .secondary-btn:hover {
+      background: #091e4214;
+    }
+  </style>
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+<body>
+  <h3>Board Overview</h3>
+  <div id="boardInfo">Loading board info...</div>
+  
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-number" id="listCount">-</div>
+      <div class="stat-label">Lists</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="cardCount">-</div>
+      <div class="stat-label">Cards</div>
+    </div>
+  </div>
+  
+  <button id="refreshBtn">Refresh Stats</button>
+  <button id="closeBtn" class="secondary-btn">Close</button>
+
+  <script>
+    var t = TrelloPowerUp.iframe();
+
+    function loadBoardData() {
+      // Get board information
+      t.board('name', 'id', 'url').then(function(board) {
+        document.getElementById('boardInfo').innerHTML = 
+          '<strong>Board:</strong> ' + board.name + '<br>' +
+          '<strong>ID:</strong> ' + board.id + '<br>' +
+          '<strong>URL:</strong> <a href="' + board.url + '" target="_blank">Open Board</a>';
+      });
+
+      // Get lists count
+      t.lists('id', 'name').then(function(lists) {
+        document.getElementById('listCount').textContent = lists.length;
+      });
+
+      // Get cards count
+      t.cards('id').then(function(cards) {
+        document.getElementById('cardCount').textContent = cards.length;
+      });
+    }
+
+    // Load data on page load
+    loadBoardData();
+
+    // Refresh button
+    document.getElementById('refreshBtn').addEventListener('click', function() {
+      loadBoardData();
+    });
+
+    // Close button
+    document.getElementById('closeBtn').addEventListener('click', function() {
+      t.closePopup();
+    });
+  </script>
+</body>
+</html>
